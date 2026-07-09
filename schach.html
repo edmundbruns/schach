@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Schach lernen und lehren &middot; Edmund Bruns</title>
+<meta name="description" content="Kostenlose Schachmaterialien für Einsteiger, Fortgeschrittene, zur Schachgeschichte, für Lehrende, zu den Schachweltmeistern und Verschiedenes.">
+<style>
+  :root{
+    --bg:#f4f2ee;--card:#ffffff;--ink:#23201c;--muted:#6b6459;--line:#e6e1d8;
+    --anf:#0f766e;--fort:#c2410c;--hist:#a16207;--lehr:#6d28d9;--wm:#1e4d8b;--div:#be185d;
+    --shadow:0 1px 3px rgba(40,30,15,.08),0 8px 22px rgba(40,30,15,.07);--radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;font-size:17px}
+  a{color:var(--anf);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  header.hero{background:#0f766e;color:#fff;padding:56px 0 42px}
+  .hero h1{font-size:2.2rem;margin:0 0 10px;line-height:1.2}
+  .hero p.lead{font-size:1.15rem;margin:0;max-width:680px;color:#eafaf6}
+  .hero .home{display:inline-block;margin-bottom:22px;color:#c8ece5;font-size:.95rem}
+
+  nav.tabs{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(40,30,15,.05)}
+  nav.tabs .wrap{display:flex;gap:6px;flex-wrap:wrap;padding-top:8px;padding-bottom:8px}
+  .tabbtn{border:0;background:transparent;font:inherit;font-weight:600;cursor:pointer;padding:10px 15px;border-radius:10px;color:var(--muted);white-space:nowrap}
+  .tabbtn:hover{background:var(--bg)}
+  .tabbtn.active{color:#fff}
+  .tabbtn[data-tab="anfaenger"].active{background:var(--anf)}
+  .tabbtn[data-tab="fortgeschritten"].active{background:var(--fort)}
+  .tabbtn[data-tab="geschichte"].active{background:var(--hist)}
+  .tabbtn[data-tab="lehrer"].active{background:var(--lehr)}
+  .tabbtn[data-tab="weltmeister"].active{background:var(--wm)}
+  .tabbtn[data-tab="verschiedenes"].active{background:var(--div)}
+
+  main{padding:34px 0 60px}
+  .panel{display:none}
+  .panel.active{display:block;animation:fade .25s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .panel-intro{max-width:760px;margin:0 0 26px;color:var(--muted)}
+
+  section.block{margin:0 0 38px}
+  section.block > h2{font-size:1.35rem;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  section.block > h2 .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .anfaenger .dot{background:var(--anf)}
+  .fortgeschritten .dot{background:var(--fort)}
+  .geschichte .dot{background:var(--hist)}
+  .lehrer .dot{background:var(--lehr)}
+  .weltmeister .dot{background:var(--wm)}
+  .verschiedenes .dot{background:var(--div)}
+  section.block > p.sub{margin:0 0 16px;color:var(--muted);font-size:.98rem;max-width:760px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
+  .card > img{width:100%;height:150px;object-fit:cover;background:#ece7de;display:block;border-bottom:1px solid var(--line)}
+  .card .ph{height:150px;display:flex;align-items:center;justify-content:center;font-size:3.6rem;line-height:1;color:rgba(255,255,255,.92);border-bottom:1px solid var(--line)}
+  .anfaenger .ph{background:linear-gradient(135deg,#0f766e,#16a394)}
+  .fortgeschritten .ph{background:linear-gradient(135deg,#c2410c,#e0712f)}
+  .geschichte .ph{background:linear-gradient(135deg,#a16207,#caa03a)}
+  .lehrer .ph{background:linear-gradient(135deg,#6d28d9,#9061e6)}
+  .weltmeister .ph{background:linear-gradient(135deg,#1e4d8b,#4074b8)}
+  .verschiedenes .ph{background:linear-gradient(135deg,#be185d,#e05089)}
+  .card .body{padding:16px 18px 18px;display:flex;flex-direction:column;flex:1}
+  .card h3{margin:0 0 6px;font-size:1.05rem}
+  .card p{margin:0 0 14px;color:var(--muted);font-size:.94rem;flex:1}
+  .card .go{align-self:flex-start;display:inline-block;font-weight:600;font-size:.9rem;padding:8px 14px;border-radius:9px;color:#fff}
+  .card .go:hover{text-decoration:none;filter:brightness(1.07)}
+  .anfaenger .card .go{background:var(--anf)}
+  .fortgeschritten .card .go{background:var(--fort)}
+  .geschichte .card .go{background:var(--hist)}
+  .lehrer .card .go{background:var(--lehr)}
+  .weltmeister .card .go{background:var(--wm)}
+  .verschiedenes .card .go{background:var(--div)}
+  .card .go.soon{background:#d5cfc4;color:#6b6459;pointer-events:none}
+  .card .more{margin-top:10px;flex:none;font-size:.9rem}
+
+  .lvl{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;font-size:.72rem;font-weight:700;letter-spacing:.02em;text-transform:uppercase;padding:3px 10px;border-radius:999px;margin-bottom:9px;border:1px solid transparent}
+  .lvl::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+  .lvl.einstieg{color:#0f766e;background:#e5f3f0;border-color:#cfe9e3}
+  .lvl.aufbau{color:#b1440b;background:#fdece0;border-color:#f7d8c2}
+  .lvl.verein{color:#7a4e06;background:#f7edd6;border-color:#eeddb8}
+  .lvl.alle{color:#5b6470;background:#eef0f2;border-color:#e1e5ea}
+
+  .formatbox{background:linear-gradient(135deg,#ffffff,#f3efe7);border:1px solid var(--line);border-left:5px solid var(--anf);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px 22px;margin:6px 0 0}
+  .formatbox .fbhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+  .formatbox h3{margin:0;font-size:1.15rem}
+  .formatbox .pill{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--anf);background:#e5f3f0;border:1px solid #cfe9e3;border-radius:999px;padding:3px 10px}
+  .formatbox > p{margin:6px 0 16px;color:var(--muted);font-size:.96rem;max-width:720px}
+  .fmts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .fmt{display:flex;flex-direction:column;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+  .fmt .type{font-size:.7rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--anf)}
+  .fmt .name{font-weight:600;font-size:.98rem}
+  .fmt .desc{font-size:.86rem;color:var(--muted);flex:1}
+  .fmt a{margin-top:4px;font-weight:600;font-size:.9rem}
+
+  .chipgroup{margin:0 0 18px}
+  .chipgroup h4{margin:0 0 9px;font-size:1rem}
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:8px 15px;font-size:.93rem;font-weight:600;box-shadow:var(--shadow)}
+  .chip.soon{color:#9a948a;background:#eeeae2;pointer-events:none;box-shadow:none}
+
+  .rules{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:6px 20px;margin-top:6px}
+  .rules details{border-bottom:1px solid var(--line)}
+  .rules details:last-child{border-bottom:0}
+  .rules summary{cursor:pointer;font-weight:600;padding:14px 4px;list-style:none;font-size:1.05rem}
+  .rules summary::-webkit-details-marker{display:none}
+  .rules summary::before{content:"+";display:inline-block;width:20px;color:var(--anf);font-weight:700}
+  .rules details[open] summary::before{content:"\2013"}
+  .rules .rbody{padding:0 4px 16px 24px;color:var(--muted)}
+  .rules .rbody .val{color:var(--ink);font-weight:600}
+  .rules .rbody img.fig{width:100%;max-width:360px;border-radius:9px;border:1px solid var(--line);margin:2px 0 12px;display:block}
+
+  .prose{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 24px;margin:0 0 24px;max-width:840px;color:var(--muted)}
+  .prose p{margin:0 0 12px}
+  .prose p:last-child{margin-bottom:0}
+
+  /* Weltmeister-Zeitleiste */
+  .wmlist{max-width:880px}
+  .wm{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--wm);border-radius:12px;box-shadow:var(--shadow);padding:16px 20px;margin:0 0 14px}
+  .wm .yr{display:inline-block;font-size:.74rem;font-weight:700;color:var(--wm);background:#e8eef7;border:1px solid #d3ddef;border-radius:999px;padding:2px 10px;margin-bottom:7px}
+  .wm h3{margin:0 0 1px;font-size:1.14rem}
+  .wm .role{display:block;color:var(--wm);font-size:.9rem;font-weight:600;margin-bottom:8px}
+  .wm p{margin:0;color:var(--muted);font-size:.94rem}
+  .wm p b{color:var(--ink)}
+  .facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:6px}
+  .fcard{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .fcard img{width:100%;height:220px;object-fit:cover;object-position:top center;background:#ece7de;border-bottom:1px solid var(--line)}
+  .fcard .fb{padding:14px 16px 16px}
+  .fcard h3{margin:0 0 6px;font-size:1.02rem}
+  .fcard p{margin:0 0 8px;color:var(--muted);font-size:.9rem}
+  .fcard .att{font-size:.72rem;color:#9a948a}
+  .fcard .att a{color:#9a948a;text-decoration:underline}
+
+  footer{border-top:1px solid var(--line);padding:26px 0;color:var(--muted);font-size:.9rem}
+  @media(max-width:600px){.hero h1{font-size:1.7rem}body{font-size:16px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <a class="home" href="https://gratis-4589610.webadorsite.com/">&larr; Zur Startseite</a>
+    <h1>Schach lernen und lehren</h1>
+    <p class="lead">Kostenlose Materialien zum Schachlernen: Diplom, Arbeitsheft, interaktive Übungen, Videos und Prüfungen. Nach Niveau geordnet, mit eigenen Bereichen zur Schachgeschichte, zu den Weltmeistern, für Lehrende und für Verschiedenes.</p>
+  </div>
+</header>
+
+<nav class="tabs" aria-label="Bereiche">
+  <div class="wrap">
+    <button class="tabbtn active" data-tab="anfaenger">Für Einsteiger</button>
+    <button class="tabbtn" data-tab="fortgeschritten">Für Fortgeschrittene</button>
+    <button class="tabbtn" data-tab="geschichte">Schachgeschichte</button>
+    <button class="tabbtn" data-tab="lehrer">Für Schachlehrer</button>
+    <button class="tabbtn" data-tab="weltmeister">Schachweltmeister</button>
+    <button class="tabbtn" data-tab="verschiedenes">Verschiedenes</button>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+
+    <!-- ============ EINSTEIGER ============ -->
+    <div class="panel anfaenger active" id="anfaenger">
+      <p class="panel-intro">Für alle, die neu beim Schach sind. Ziel dieses Bereichs: die Figuren, die Grundregeln und die Notation sicher lernen. Jede Karte zeigt oben ihr Niveau. Hier findest du ausschließlich Material der Stufe <strong>Einsteiger</strong>.</p>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Der beste Einstieg</h2>
+        <p class="sub">Starte mit einer Geschichte, dann mit dem Diplom oder der Online-Version, und schau dir die Erklärvideos an.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101136.png" alt="Eine Reise durch den Wald" loading="lazy"><div class="body"><span class="lvl einstieg">Zum Einstieg</span><h3>Eine Reise durch den Wald</h3><p>Robert lernt Schach und trifft Tiere und Menschen, die es ihm in Reimform erklären.</p><a class="go" href="https://app.lumi.education/run/Lb3ty9" target="_blank" rel="noopener">Geschichte</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/lwtzcs/screenshot2024-02-12101111.png?enable-io=true&enable=upscale&crop=1.2659%3A1&width=800" alt="Emmas Schachzeitreise" loading="lazy"><div class="body"><span class="lvl einstieg">Zum Einstieg</span><h3>Emmas Schachzeitreise</h3><p>Von der Erde ins Weltall: Emma löst mutig Rätsel auf fremden Planeten.</p><a class="go" href="https://app.lumi.education/run/5kpboG" target="_blank" rel="noopener">Geschichte</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/2caa1762-cfd2-41e4-9e42-764077d55630-standard.png" alt="Ludgerus-Schachdiplom" loading="lazy"><div class="body"><span class="lvl einstieg">Empfohlener Lernweg</span><h3>Ludgerus-Schachdiplom</h3><p>Digitaler Lernweg in drei Stufen: Bronze, Silber, Gold. Am Ende steht ein Abschlusstest.</p><a class="go" href="https://ludgerus-schachdiplom.netlify.app/" target="_blank" rel="noopener">Diplom starten</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-06-08-122112-high.png?enable-io=true&enable=upscale&crop=0.7202%3A1&width=800" alt="Grundregeln online" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Grundregeln online üben</h3><p>Direkt im Browser, ideal für Tablets und Whiteboards. Kein Download nötig.</p><a class="go" href="https://edmundbruns.github.io/Schach-grundregeln/" target="_blank" rel="noopener">Online-Version</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/chatgpt-image-26-dez-2025-09_52_05-standard.jpg" alt="So ziehen die Figuren" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>So ziehen die Figuren (Video)</h3><p>Eine Figur nach der anderen, mit freundlichen Bildern und einprägsamen Merksätzen.</p><a class="go" href="https://app.lumi.education/run/f_DPeU" target="_blank" rel="noopener">Video ansehen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/chatgpt-image-2-feb-2026-14_58_07-standard.jpg" alt="Grundregeln als Präsentation" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Grundregeln, anders erklärt</h3><p>Dieselben Regeln als ruhige Bild-für-Bild-Präsentation, zum Lesen in eigenem Tempo.</p><a class="go" href="https://app.lumi.education/run/W24lfj" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101325.png" alt="Selbstlernkurs I" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Selbstlernkurs I</h3><p>Grundaufstellung, Spielzüge und Notation als interaktives Buch.</p><a class="go" href="https://app.lumi.education/run/dx2Ak1" target="_blank" rel="noopener">Kurs</a><span class="more"><a href="https://app.lumi.education/run/Kh18PK" target="_blank" rel="noopener">Test zu Kurs I &rarr;</a></span></div></div>
+        </div>
+      </section>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Grundregeln &ndash; in mehreren Formaten</h2>
+        <p class="sub">Dasselbe Material, vier Wege es zu nutzen. Wähle das Format, das zu deinem Gerät und deiner Situation passt.</p>
+        <div class="formatbox">
+          <div class="fbhead"><h3>Schach-Grundregeln</h3><span class="pill">4 Formate</span></div>
+          <p>Der gleiche Lerninhalt als interaktive Online-Version, als PDF zum Ausdrucken, als bearbeitbares PDF und mit passenden Lösungen zur Selbstkontrolle.</p>
+          <div class="fmts">
+            <div class="fmt"><span class="type">Online &middot; interaktiv</span><span class="name">Online-Version</span><span class="desc">Im Browser bearbeiten, ideal für Tablet und Whiteboard.</span><a href="https://edmundbruns.github.io/Schach-grundregeln/" target="_blank" rel="noopener">Öffnen &rarr;</a></div>
+            <div class="fmt"><span class="type">PDF &middot; zum Drucken</span><span class="name">Arbeitsheft (PDF)</span><span class="desc">Klassische Arbeitsblätter zum Ausdrucken.</span><a href="https://ludgerusschule-rhede.de/wp-content/uploads/2025/01/Schach-lernen-Grundregeln-1-ausgabe.pdf" target="_blank" rel="noopener">Öffnen &rarr;</a></div>
+            <div class="fmt"><span class="type">PDF &middot; bearbeitbar</span><span class="name">Bearbeitbares PDF</span><span class="desc">Herunterladen und am Gerät ausfüllen.</span><a href="https://drive.google.com/file/d/1FCcHicOwxeUqhy1_QjLcGt8IyNq7E2ls/view?usp=sharing" target="_blank" rel="noopener">Herunterladen &rarr;</a></div>
+            <div class="fmt"><span class="type">Online &middot; Lösungen</span><span class="name">Lösungen</span><span class="desc">Zur Selbstkontrolle und Besprechung.</span><a href="https://edmundbruns.github.io/Schach-grundregeln/loesungen.html" target="_blank" rel="noopener">Öffnen &rarr;</a></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Die Figuren nachlesen</h2>
+        <p class="sub">Zug- und Schlagweise aller Figuren in einfacher Sprache, mit Bild. Zum Aufklappen.</p>
+        <div class="rules">
+          <details open><summary>Das Schachbrett</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-140608-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Das Schachbrett" loading="lazy">64 Felder, 32 helle und 32 dunkle, immer abwechselnd. Unten die Buchstaben a bis h, an der Seite die Zahlen 1 bis 8. So heißt jedes Feld eindeutig, zum Beispiel e4. <span class="val">Merke:</span> Rechts unten ist immer ein helles Feld.</div></details>
+          <details><summary>Der Turm</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-135305-standard.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Der Turm" loading="lazy">Zieht gerade nach vorne, hinten, links und rechts, so weit er möchte. Nicht über andere Figuren springen. Wert: etwa <span class="val">5 Bauern</span>.</div></details>
+          <details><summary>Der Läufer</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-141814-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Der Läufer" loading="lazy">Bewegt sich immer schräg (diagonal), so weit er möchte. Nicht über andere Figuren springen. Wert: etwa <span class="val">3 Bauern</span>.</div></details>
+          <details><summary>Die Dame</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-142056-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Die Dame" loading="lazy">Die stärkste Figur: gerade und schräg in alle Richtungen, so weit sie möchte. Wert: etwa <span class="val">9 Bauern</span>.</div></details>
+          <details><summary>Der König</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-142420-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Der König" loading="lazy">Die wichtigste Figur: immer nur ein Feld in jede Richtung. Wird der König mattgesetzt, ist das Spiel vorbei. <span class="val">Wichtig:</span> Der König wird nie geschlagen.</div></details>
+          <details><summary>Der Springer</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-143058-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Der Springer" loading="lazy">Zieht im großen L: zwei Felder in eine Richtung, dann ein Feld zur Seite. Die einzige Figur, die über andere springen darf. Wert: etwa <span class="val">3 Bauern</span>.</div></details>
+          <details><summary>Der Bauer</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-143516-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Der Bauer" loading="lazy">Ein Feld nach vorne, beim ersten Zug auch zwei. Er schlägt aber schräg nach vorne, ein Feld nach links oder rechts.</div></details>
+          <details><summary>Die Grundstellung</summary><div class="rbody"><img class="fig" src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-02-16-143658-high.png?enable-io=true&enable=upscale&crop=0.9973%3A1&width=800" alt="Die Grundstellung" loading="lazy">Weiße Bauern auf der 2. Reihe, schwarze auf der 7. Außen die Türme, dann Springer, dann Läufer, in der Mitte Dame und König. <span class="val">Merke:</span> Weiße Dame auf weißem Feld.</div></details>
+        </div>
+      </section>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Fragen zu Figuren und Regeln beantworten</h2>
+        <p class="sub">Kurze Online-Arbeitsblätter zu jeder Figur und den wichtigsten Regeln.</p>
+        <div class="chipgroup"><h4>Wie zieht welche Figur?</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/7MwKv1" target="_blank" rel="noopener">Turm</a>
+            <a class="chip" href="https://app.lumi.education/run/06smCh" target="_blank" rel="noopener">Läufer</a>
+            <a class="chip" href="https://app.lumi.education/run/oX9zBa" target="_blank" rel="noopener">Springer</a>
+            <a class="chip" href="https://app.lumi.education/run/Pz8U3T" target="_blank" rel="noopener">Dame</a>
+            <a class="chip" href="https://app.lumi.education/run/9TdK8s" target="_blank" rel="noopener">König</a>
+            <a class="chip" href="https://app.lumi.education/run/6b4TXW" target="_blank" rel="noopener">Bauern</a>
+          </div></div>
+        <div class="chipgroup"><h4>Schach und Matt üben</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/CxqW3U" target="_blank" rel="noopener">Schach geben</a>
+            <a class="chip" href="https://app.lumi.education/run/XoLOH5" target="_blank" rel="noopener">Schachmatt</a>
+          </div></div>
+        <div class="chipgroup"><h4>Sonderregeln</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/LZqL4F" target="_blank" rel="noopener">Rochade</a>
+            <a class="chip" href="https://app.lumi.education/run/41b2o7" target="_blank" rel="noopener">En passant</a>
+            <a class="chip" href="https://app.lumi.education/run/r29oly" target="_blank" rel="noopener">Patt</a>
+            <a class="chip" href="https://app.lumi.education/run/wbGOj_" target="_blank" rel="noopener">Umwandlung</a>
+          </div></div>
+      </section>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Was ist eigentlich …?</h2>
+        <p class="sub">Kurze Erklärstücke zu einzelnen Begriffen. Einige sind noch in Arbeit.</p>
+        <div class="chips">
+          <a class="chip" href="https://app.lumi.education/run/nzc2hT" target="_blank" rel="noopener">… ein Angriff auf eine Figur?</a>
+          <a class="chip" href="https://app.lumi.education/run/PxWNzE" target="_blank" rel="noopener">… das Decken einer Figur?</a>
+          <a class="chip" href="https://app.lumi.education/run/wDnF9u" target="_blank" rel="noopener">… ein Schach?</a>
+          <a class="chip" href="https://app.lumi.education/run/4eHDhO" target="_blank" rel="noopener">… ein Matt?</a>
+          <a class="chip" href="https://app.lumi.education/run/WcTL4i" target="_blank" rel="noopener">… die Rochade?</a>
+          <a class="chip" href="https://app.lumi.education/run/HjrdF-" target="_blank" rel="noopener">… en passant?</a>
+          <a class="chip" href="https://app.lumi.education/run/12TaKR" target="_blank" rel="noopener">… ein Tempo?</a>
+          <span class="chip soon">… die Bauernumwandlung (in Arbeit)</span>
+          <span class="chip soon">… ein Patt (in Arbeit)</span>
+          <span class="chip soon">… die Notation (in Arbeit)</span>
+          <span class="chip soon">… Remis (in Arbeit)</span>
+          <span class="chip soon">… Zeitüberschreitung (in Arbeit)</span>
+        </div>
+      </section>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Interaktive Trainings</h2>
+        <p class="sub">Spielerisch das Brett und die Figuren kennenlernen, mit sofortiger Rückmeldung.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-02-080920-standard.png" alt="Legale Züge" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Legale Züge</h3><p>Markiere alle erlaubten Felder einer Figur. Baut sich Schritt für Schritt auf.</p><a class="go" href="https://edmundbruns.github.io/legale-zuege/" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-01-145402-standard.png" alt="Koordinatensprint" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Koordinatensprint</h3><p>Ein Feld wird genannt, du klickst es so schnell wie möglich an. Schaffst du 20 am Stück?</p><a class="go" href="https://edmundbruns.github.io/feldraten/" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-01-161748-high.png?enable-io=true&enable=upscale&crop=1.101%3A1&width=800" alt="Figurenwert" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Figurenwert</h3><p>Wie viel ist welche Figur wert? Schnelle Entscheidungen im 60-Sekunden-Modus.</p><a class="go" href="https://edmundbruns.github.io/figurentaisch/" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-02-085536-standard.png" alt="Bedrohung erkennen" loading="lazy"><div class="body"><span class="lvl alle">Einsteiger &amp; Aufbau</span><h3>Bedrohung erkennen</h3><p>Welche Figur ist angegriffen? Der Schwierigkeitsgrad passt sich automatisch an.</p><a class="go" href="https://edmundbruns.github.io/bedrohung/" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-30-152641-standard.png" alt="Bedrohungs-Detektiv" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Bedrohungs-Detektiv</h3><p>Schärft den Blick für Gefahren auf dem Brett. Verschiedene Schwierigkeitsstufen.</p><a class="go" href="https://edmundbruns.github.io/BedrohungsDetektiv/" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-29-152226-standard.png" alt="Notationstrainer" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Notationstrainer</h3><p>Zug sehen, richtig aufschreiben, sofort Rückmeldung bekommen.</p><a class="go" href="https://edmundbruns.github.io/notation/" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101356.png" alt="Grundstellung aufbauen" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Grundstellung aufbauen</h3><p>Kannst du die Startaufstellung richtig aufs Brett bringen?</p><a class="go" href="https://otacke.h5p.com/content/1291002270409364377" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-28-100653-standard.png" alt="Schach-Memory" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Schach-Memory</h3><p>Finde die passenden Figurenpaare und trainiere deine Konzentration.</p><a class="go" href="https://edmundbruns.github.io/schachmemory/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-03-122633-standard.png" alt="Schach-Suchsel" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Schach-Suchsel</h3><p>Wortsuche mit Schachbegriffen. Für Pausen, AG oder die Wartezeit auf den Bus.</p><a class="go" href="https://edmundbruns.github.io/suchsel/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-29-124714-standard.png" alt="Schach-Wortspiel" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Schach-Wortspiel</h3><p>Ein Wort ist gesucht, ein Hinweis hilft. Rate, bevor die Versuche ausgehen.</p><a class="go" href="https://edmundbruns.github.io/schachwortspiel/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-26-160308-standard.png" alt="Schach-Millionär" loading="lazy"><div class="body"><span class="lvl alle">Einsteiger &amp; Aufbau</span><h3>Schach-Millionär</h3><p>Beantworte Fragen und sammle Stufe für Stufe Bauerntaler.</p><a class="go" href="https://edmundbruns.github.io/bauerntaler/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-27-091553-standard.png" alt="Schach-Jeopardy" loading="lazy"><div class="body"><span class="lvl alle">Einsteiger &amp; Aufbau</span><h3>Schach-Jeopardy</h3><p>Quiz im Jeopardy-Stil: Kategorien wählen und Punkte sammeln.</p><a class="go" href="https://edmundbruns.github.io/schachjepordy/" target="_blank" rel="noopener">Spielen</a></div></div>
+        </div>
+      </section>
+
+      <section class="block anfaenger">
+        <h2><span class="dot"></span>Prüfung</h2>
+        <p class="sub">Das Gelernte anwenden und überprüfen.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/chatgpt-image-8-jan-2026-07_30_26-high.jpg?enable-io=true&enable=upscale&crop=0.6667%3A1&width=800" alt="Prüfung 1" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Prüfung 1: Grundregeln</h3><p>24 Fragen zu Zügen, Figuren und einfachen Regeln. Bestanden ab 70 %.</p><a class="go" href="https://app.lumi.education/run/2BV3aN" target="_blank" rel="noopener">Prüfung starten</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101325.png" alt="Selbstlernkurs I" loading="lazy"><div class="body"><span class="lvl einstieg">Einsteiger</span><h3>Selbstlernkurs I</h3><p>Grundaufstellung, Spielzüge und Notation als interaktives Buch, mit Abschlusstest.</p><a class="go" href="https://app.lumi.education/run/dx2Ak1" target="_blank" rel="noopener">Kurs</a><span class="more"><a href="https://app.lumi.education/run/Kh18PK" target="_blank" rel="noopener">Test zu Kurs I &rarr;</a></span></div></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ FORTGESCHRITTENE ============ -->
+    <div class="panel fortgeschritten" id="fortgeschritten">
+      <p class="panel-intro">Für alle, die die Regeln sicher beherrschen und besser werden wollen. Schwerpunkte: Taktik, Strategie, Endspiel und Eröffnungen. Niveau <strong>Aufbau</strong> bis <strong>Verein</strong>.</p>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Selbstlernkurse</h2>
+        <p class="sub">Aufeinander aufbauende Kurse mit interaktivem Buch und passendem Test. Kurs I steht im Bereich für Einsteiger.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101457.png" alt="Selbstlernkurs II" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Selbstlernkurs II</h3><p>Eröffnung, Taktik, elementare Mattführung, einzügige Mattaufgaben, erstes Endspielwissen.</p><a class="go" href="https://app.lumi.education/run/AvZW6Q" target="_blank" rel="noopener">Kurs</a><span class="more"><a href="https://app.lumi.education/run/xi8XaV" target="_blank" rel="noopener">Test zu Kurs II &rarr;</a></span></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101517.png" alt="Selbstlernkurs III" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Selbstlernkurs III</h3><p>Mattstellungen, Mattführung mit einem Turm, Matt abwehren, weitere Taktik und Endspiel.</p><a class="go" href="https://app.lumi.education/run/oJiLDl" target="_blank" rel="noopener">Kurs</a><span class="more"><a href="https://app.lumi.education/run/U-V9QJ" target="_blank" rel="noopener">Test zu Kurs III &rarr;</a></span></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101611.png" alt="Selbstlernkurs IV" loading="lazy"><div class="body"><span class="lvl verein">Vereinsspieler</span><h3>Selbstlernkurs IV</h3><p>Weitere taktische Begriffe und Endspielwissen. Etwa 10 bis 12 Stunden.</p><a class="go" href="https://app.lumi.education/run/0-YSzK" target="_blank" rel="noopener">Kurs</a><span class="more"><a href="https://app.lumi.education/run/VVRqZT" target="_blank" rel="noopener">Test zu Kurs IV &rarr;</a></span></div></div>
+        </div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Taktik</h2>
+        <p class="sub">Die wichtigsten Motive erkennen und trainieren.</p>
+        <div class="chipgroup"><h4>Taktische Begriffe</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/uxLOEF" target="_blank" rel="noopener">Fesselung</a>
+            <a class="chip" href="https://app.lumi.education/run/KG07FR" target="_blank" rel="noopener">Gabel</a>
+            <a class="chip" href="https://app.lumi.education/run/abAXdY" target="_blank" rel="noopener">Spieß</a>
+            <a class="chip" href="https://app.lumi.education/run/2boEgH" target="_blank" rel="noopener">Abzug</a>
+            <a class="chip" href="https://app.lumi.education/run/acaEh-" target="_blank" rel="noopener">Überlastung</a>
+          </div></div>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-03-121501-standard.png" alt="Mattfeld und ungedeckte Figur" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Mattfeld und ungedeckte Figur</h3><p>Finde das Mattfeld und die Figur, die den Mattzug schlagen könnte. Achtung: Eine Aufgabe enthält einen Fehler.</p><a class="go" href="https://edmundbruns.github.io/mattundfigur/" target="_blank" rel="noopener">Training</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-01-14-083615-high.png?enable-io=true&enable=upscale&crop=1.9813%3A1&width=800" alt="Taktik-Training" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Taktik-Training 1</h3><p>Interaktive Aufgaben zum taktischen Verständnis.</p><a class="go" href="https://app.lumi.education/run/yYgfRm" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-01-21-111117-standard.png" alt="Taktik-Training" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Taktik-Training 2</h3><p>Weitere interaktive Aufgaben zum taktischen Verständnis.</p><a class="go" href="https://app.lumi.education/run/F6ynhe" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-01-11-072856-standard.png" alt="Taktik-Training" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Taktik-Training 3</h3><p>Noch mehr Aufgaben zum taktischen Verständnis.</p><a class="go" href="https://app.lumi.education/run/UkmKUw" target="_blank" rel="noopener">Üben</a></div></div>
+        </div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Strategie und Endspiel</h2>
+        <p class="sub">Vom einzelnen Zug zum Plan.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/cr1nhs/screenshot2024-02-12101431.png?enable-io=true&enable=upscale&crop=0.996%3A1&width=800" alt="Schachprinzipien" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Schachprinzipien</h3><p>Leitlinien, die zu besseren Stellungen führen und die eigenen Fähigkeiten verbessern.</p><a class="go" href="https://app.lumi.education/run/gUIjCc" target="_blank" rel="noopener">Lernen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2025-12-04-105718-standard.png" alt="Matt mit Dame und König" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Matt mit Dame und König</h3><p>Lernvideo und Übung zur Mattführung gegen den einzelnen König.</p><a class="go" href="https://app.lumi.education/run/uLYeLn" target="_blank" rel="noopener">Video + Übung</a></div></div>
+          <div class="card"><div class="ph">&#9820;</div><div class="body"><span class="lvl verein">Vereinsspieler</span><h3>Bauernstruktur schwächen</h3><p>Video plus Übung zum strategischen Thema Bauernstruktur.</p><a class="go" href="https://app.lumi.education/run/gywRKg" target="_blank" rel="noopener">Video</a><span class="more"><a href="https://app.lumi.education/run/7-txBU" target="_blank" rel="noopener">Übung dazu &rarr;</a></span></div></div>
+          <div class="card"><div class="ph">&#9817;</div><div class="body"><span class="lvl verein">Vereinsspieler</span><h3>Bauernstruktur verbessern</h3><p>Wie du deine eigene Bauernstruktur stärkst.</p><a class="go" href="https://app.lumi.education/run/ehc2QE" target="_blank" rel="noopener">Video</a></div></div>
+        </div>
+        <div class="chipgroup" style="margin-top:18px"><h4>Fragen zu den weiteren Begriffen beantworten</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/8ohIAE" target="_blank" rel="noopener">Tempo</a>
+            <a class="chip" href="https://app.lumi.education/run/kyeO2H" target="_blank" rel="noopener">Freibauer</a>
+            <a class="chip" href="https://app.lumi.education/run/dcjd2C" target="_blank" rel="noopener">Opposition</a>
+          </div></div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Eröffnungen</h2>
+        <p class="sub">Die ersten Züge verstehen und erkennen.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-04-090537-standard.png" alt="Eröffnung des Monats" loading="lazy"><div class="body"><span class="lvl alle">Einsteiger &amp; Aufbau</span><h3>Eröffnung des Monats</h3><p>Bis April 2027 jeden Monat eine neue Eröffnung mit spielbarem Brett und einfachen Erklärungen.</p><a class="go" href="https://edmundbruns.github.io/eroeffnung/" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-29-144323-standard.png" alt="Eröffnungs-Erkenner" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Eröffnungs-Erkenner</h3><p>Erkenne an Stellung und Zugfolge, welche Eröffnung gespielt wurde. Sammle Punkte.</p><a class="go" href="https://edmundbruns.github.io/eroeffnungraten/" target="_blank" rel="noopener">Quiz</a></div></div>
+        </div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Quiz und Prüfung</h2>
+        <p class="sub">Wissen testen, von Aufbau bis Vereinsniveau.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-29-082650-standard.png" alt="Schach-Trivial" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Schach-Trivial</h3><p>Wissensspiel auf dem 4×4-Brett: Wer erobert zuerst neun Felder?</p><a class="go" href="https://edmundbruns.github.io/schachtriva/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-27-091553-standard.png" alt="Schach-Jeopardy" loading="lazy"><div class="body"><span class="lvl verein">DWZ 800&ndash;1200</span><h3>Schach-Jeopardy</h3><p>Quiz im Jeopardy-Stil, ausgelegt für eine DWZ von etwa 800 bis 1200.</p><a class="go" href="https://edmundbruns.github.io/schachjepordy/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-26-160308-standard.png" alt="Schach-Millionär" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Schach-Millionär</h3><p>Beantworte Fragen und sammle Stufe für Stufe Bauerntaler.</p><a class="go" href="https://edmundbruns.github.io/bauerntaler/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/chatgpt-image-8-jan-2026-07_41_44-standard.jpg" alt="Prüfung 2 Taktik" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Prüfung 2: Taktik</h3><p>Game Map: Fesselung, Gabel, Spieß, Abzugsschach und einfache Mattbilder erkennen.</p><a class="go" href="https://app.lumi.education/run/o0aNet" target="_blank" rel="noopener">Prüfung</a></div></div>
+          <div class="card"><div class="ph">&#9819;</div><div class="body"><span class="lvl alle">Alle Niveaus</span><h3>Schachquiz</h3><p>Spannende Fragen rund um das Schachspiel.</p><a class="go" href="https://app.lumi.education/run/f0t12v" target="_blank" rel="noopener">Quiz</a></div></div>
+        </div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Matt- und Endspielaufgaben</h2>
+        <p class="sub">Die meisten Partien werden durch taktische Schläge oder im Endspiel entschieden. Hier dreht sich alles ums Mattsetzen und die wichtigsten Endspiele.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101733.png" alt="Matt in einem Zug" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Matt in einem Zug</h3><p>Setze in nur einem Zug matt. Ideal zum Mustertraining.</p><a class="go" href="https://app.lumi.education/run/UcS_fF" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><div class="ph">&#9819;</div><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Matt in zwei Zügen</h3><p>Finde das erzwungene Matt in zwei Zügen.</p><a class="go" href="https://app.lumi.education/run/GKKgPY" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101809.png" alt="Fluchtfelder versperren" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Fluchtfelder versperren</h3><p>Nimm den Figuren, besonders dem König, wichtige Felder.</p><a class="go" href="https://app.lumi.education/run/EydjhX" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2025-03-09-093030-standard.png" alt="Grundreihenmatt" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Grundreihenmatt</h3><p>Dame oder Turm dringt auf die Grundreihe ein und setzt den hinter Bauern eingeklemmten König matt.</p><a class="go" href="https://app.lumi.education/run/A_CKmu" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101707.png" alt="Endspieltraining" loading="lazy"><div class="body"><span class="lvl verein">Endspiel</span><h3>Endspieltraining</h3><p>Wer das Endspiel beherrscht, der kann Schach spielen. Sammlung mit Endspielaufgaben.</p><a class="go" href="https://app.lumi.education/run/Aq7qbu" target="_blank" rel="noopener">Üben</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12101559.png" alt="Wiederholungsfragen" loading="lazy"><div class="body"><span class="lvl aufbau">Aufbau</span><h3>Wiederholungsfragen I&ndash;III</h3><p>Viele Wiederholungsfragen aus den Selbstlernkursen I bis III.</p><a class="go" href="https://app.lumi.education/run/sg95nU" target="_blank" rel="noopener">Üben</a></div></div>
+        </div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>„Checkmate Corner" von Emma Fortissima-Caissa</h2>
+        <p class="sub">Mädchen aus der Schule wünschten sich, dass nicht immer nur männliche Figuren und Stimmen erklären. Recht haben sie. In dieser Reihe erklärt Emma, mit eigenem Intro-Song.</p>
+        <div class="chipgroup"><h4>Matt und Vorstellung</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/Re83E_" target="_blank" rel="noopener">Intro-Song: Pieces in Motion</a>
+            <a class="chip" href="https://app.lumi.education/run/EXkOs7" target="_blank" rel="noopener">Emma stellt sich vor (Matt in 2)</a>
+            <a class="chip" href="https://app.lumi.education/run/87upH5" target="_blank" rel="noopener">Matt in einem Zug</a>
+            <a class="chip" href="https://app.lumi.education/run/1gtQA8" target="_blank" rel="noopener">Matt in zwei Zügen</a>
+          </div></div>
+        <div class="chipgroup"><h4>Endspiel</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/9mKziW" target="_blank" rel="noopener">Die Lucena-Stellung</a>
+            <a class="chip" href="https://app.lumi.education/run/oKxsdy" target="_blank" rel="noopener">Endspiel 1</a>
+            <a class="chip" href="https://app.lumi.education/run/QWWNAB" target="_blank" rel="noopener">Endspiel 2</a>
+            <a class="chip" href="https://app.lumi.education/run/vF6f3_" target="_blank" rel="noopener">Endspiel 3</a>
+            <a class="chip" href="https://app.lumi.education/run/hz8wnh" target="_blank" rel="noopener">Endspiel 4</a>
+            <a class="chip" href="https://app.lumi.education/run/XKhycT" target="_blank" rel="noopener">Endspiel 5</a>
+            <a class="chip" href="https://app.lumi.education/run/W1JaWi" target="_blank" rel="noopener">Opposition</a>
+            <a class="chip" href="https://app.lumi.education/run/_rmqam" target="_blank" rel="noopener">König aktiv einsetzen</a>
+            <a class="chip" href="https://app.lumi.education/run/AlXoLx" target="_blank" rel="noopener">Theoretische Gewinnstellung</a>
+          </div></div>
+      </section>
+
+      <section class="block fortgeschritten">
+        <h2><span class="dot"></span>Weitertrainieren</h2>
+        <p class="sub">Bewährte externe Plattformen für tägliches Taktiktraining.</p>
+        <div class="chips">
+          <a class="chip" href="https://ludgerusschule-rhede.de/wp-admin/admin-ajax.php?action=h5p_embed&id=9" target="_blank" rel="noopener">Taktik-Linksammlung</a>
+          <a class="chip" href="https://www.chess.com/puzzles" target="_blank" rel="noopener">Chess.com Taktiktrainer</a>
+          <a class="chip" href="https://lichess.org/training" target="_blank" rel="noopener">Lichess Taktiktraining</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ SCHACHGESCHICHTE ============ -->
+    <div class="panel geschichte" id="geschichte">
+      <p class="panel-intro">Woher kommt das Schachspiel, und wer hat es geprägt? Dieser Bereich verbindet einen kurzen Überblick mit interaktiven Angeboten und einer Videoreihe zur Kulturgeschichte des Schachs.</p>
+
+      <section class="block geschichte">
+        <h2><span class="dot"></span>Ein kurzer Überblick</h2>
+        <div class="prose">
+          <p>Die Wurzeln des Schachs reichen rund 1500 Jahre zurück. Aus dem indischen Spiel <em>Chaturanga</em> entwickelte sich über das persische <em>Schatrandsch</em> nach und nach das Spiel, das über die arabische Welt im Mittelalter nach Europa kam.</p>
+          <p>Dort erhielten die Figuren im 15. und 16. Jahrhundert ihre heutige Gangart, besonders Dame und Läufer wurden deutlich stärker. Seit dem 19. Jahrhundert gibt es Turniere, Vereine und feste Regeln, seit 1886 auch offizielle Weltmeister.</p>
+        </div>
+      </section>
+
+      <section class="block geschichte">
+        <h2><span class="dot"></span>Entdecken und ausprobieren</h2>
+        <p class="sub">Schachgeschichte spielerisch erleben.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-05-02-133703-standard.png" alt="Zeitstrahl" loading="lazy"><div class="body"><span class="lvl alle">Alle Niveaus</span><h3>Zeitstrahl der Schachgeschichte</h3><p>Ordne Partien, Weltmeister und Momente per Drag &amp; Drop in die richtige Reihenfolge.</p><a class="go" href="https://edmundbruns.github.io/zeitstrahl/" target="_blank" rel="noopener">Spielen</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot-2026-04-30-075728-standard.png" alt="Wer war's" loading="lazy"><div class="body"><span class="lvl alle">Alle Niveaus</span><h3>Wer war's?</h3><p>Quiz über berühmte Schachspieler:innen anhand kurzer Hinweise zu Herkunft, Erfolgen und Stil.</p><a class="go" href="https://edmundbruns.github.io/weristes/" target="_blank" rel="noopener">Quiz</a></div></div>
+          <div class="card"><div class="ph">&#9812;</div><div class="body"><span class="lvl alle">Alle Niveaus</span><h3>Reise durch Raum und Zeit</h3><p>Wann und wo entstand das Schachspiel, und wie kam es nach Europa? Vom alten Indien über Persien bis in die Königshäuser Europas.</p><a class="go" href="https://app.lumi.education/run/IgoA7G" target="_blank" rel="noopener">Entdecken</a></div></div>
+          <div class="card"><div class="ph">&#9813;</div><div class="body"><span class="lvl alle">Escape Room</span><h3>Reise durch Zeit, Kulturen und Gleichstellung</h3><p>Wie wurde aus einer bescheidenen Figur die mächtigste Waffe auf dem Brett?</p><a class="go" href="https://app.lumi.education/run/CqGumJ" target="_blank" rel="noopener">Starten</a></div></div>
+          <div class="card"><div class="ph">&#9819;</div><div class="body"><span class="lvl alle">EduBreakout</span><h3>Eine kulturgeschichtliche Reise</h3><p>Ein Breakout durch das 20. und 21. Jahrhundert.</p><a class="go" href="https://app.lumi.education/run/yeNIlk" target="_blank" rel="noopener">Starten</a></div></div>
+        </div>
+      </section>
+
+      <section class="block geschichte">
+        <h2><span class="dot"></span>Videoreihe: Kulturgeschichte des Schachs</h2>
+        <p class="sub">KI-generierte Videos von Edmund Bruns (2025), erstellt u.a. mit NotebookLM. Kurzweilige Einblicke in Epochen, Politik und Ideen rund um das Spiel.</p>
+        <div class="grid">
+          <div class="card"><div class="ph">&#9822;</div><div class="body"><span class="lvl alle">Video</span><h3>Wie Schach intelligent wurde</h3><p>Wie das Spiel klüger wurde. KI-generiertes Video, erstellt mit NotebookLM (25.12.2025).</p><a class="go" href="https://app.lumi.education/run/HTXFmj" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9819;</div><div class="body"><span class="lvl alle">Video</span><h3>Romantik &amp; Schach</h3><p>Wenn Gefühle das Spiel verändern. Eine Reise über das Brett hinaus, mitten ins Herz einer Epoche.</p><a class="go" href="https://app.lumi.education/run/kAkGo1" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9821;</div><div class="body"><span class="lvl alle">Video</span><h3>1. Weltkrieg, Duchamp und neue Ideen</h3><p>Was ein Klo-Becken und ein Schachbrett gemeinsam haben: avantgardistische Kunst und hypermoderne Schachideen.</p><a class="go" href="https://app.lumi.education/run/lzK-1v" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9820;</div><div class="body"><span class="lvl alle">Video</span><h3>Kontrolle statt Besetzung</h3><p>Das hypermoderne Schach. KI-generiertes Video, erstellt mit NotebookLM (25.12.2025).</p><a class="go" href="https://app.lumi.education/run/z1Qch2" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9817;</div><div class="body"><span class="lvl alle">Video</span><h3>Arbeiterschach</h3><p>Geschichte eines vergessenen Kulturerbes: Schach als Werkzeug der Selbstbildung und des Klassenkampfs. NotebookLM (30.12.2025).</p><a class="go" href="https://app.lumi.education/run/IHeNC9" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9818;</div><div class="body"><span class="lvl alle">Video</span><h3>Antisemitismus auf dem Schachbrett</h3><p>Von subtiler Ausgrenzung bis zum angeblichen „jüdischen Schachstil" lange vor 1933. NotebookLM (30.12.2025).</p><a class="go" href="https://app.lumi.education/run/NgZV6T" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9822;</div><div class="body"><span class="lvl alle">Video</span><h3>Logik im Angesicht des Irrsinns</h3><p>KI-generiertes Video, erstellt u.a. mit NotebookLM (03.01.2026).</p><a class="go" href="https://app.lumi.education/run/NC_vGg" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9812;</div><div class="body"><span class="lvl alle">Video</span><h3>Der Kalte Krieg auf dem Schachbrett</h3><p>Als Sport zur Bühne ideologischer Überlegenheit wurde. Weltanschauungen trafen am Brett aufeinander. NotebookLM (02.01.2026).</p><a class="go" href="https://app.lumi.education/run/Q6N-j2" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9813;</div><div class="body"><span class="lvl alle">Video</span><h3>KI und Schach</h3><p>Als Maschinen Schach spielten, veränderte sich unser Blick auf das Denken selbst. NotebookLM (31.12.2025).</p><a class="go" href="https://app.lumi.education/run/BswEn8" target="_blank" rel="noopener">Ansehen</a></div></div>
+        </div>
+        <p class="sub" style="margin-top:14px;font-size:.86rem">Bilder und Videos KI-generiert (u.a. NotebookLM/Google, ChatGPT). Erstellt von E. Bruns.</p>
+      </section>
+    </div>
+
+    <!-- ============ LEHRER ============ -->
+    <div class="panel lehrer" id="lehrer">
+      <p class="panel-intro">Material für den Einsatz in Unterricht, Schach-AG, Ganztag und Vertretung. Hier liegt der Fokus auf Didaktik, fertigen Einheiten und Werkzeugen für Lehrende, nicht auf einem Lernniveau.</p>
+
+      <section class="block lehrer">
+        <h2><span class="dot"></span>Grundlagen für den Unterricht</h2>
+        <p class="sub">Hintergrund und Werkzeuge, um Schach im Schulalltag einzusetzen.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/screenshot2024-02-12115757.png" alt="Schach im Schulalltag" loading="lazy"><div class="body"><h3>Schach im Schulalltag</h3><p>Handreichung als PDF: wie sich Schach sinnvoll in den Schulalltag einbinden lässt.</p><a class="go" href="https://docs.google.com/viewer?url=https%3A%2F%2Fprimary.jwwb.nl%2Fplugin-documents%2F602f788e25cb06fe2f37afb399e308b3dff30329.pdf&embedded=true" target="_blank" rel="noopener">PDF öffnen</a></div></div>
+          <div class="card"><div class="ph">&#9816;</div><div class="body"><h3>H5P und Lumi</h3><p>Die interaktiven Inhalte sind mit H5P erstellt. Ein Blick hinter die Kulissen der Lehr-Lern-Formate.</p><a class="go" href="https://app.lumi.education/run/hsCRR9" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9814;</div><div class="body"><h3>Excel zur Lernfortschritts&shy;erfassung</h3><p>Lernfortschrittsraster mit Name, Lernthema und Dropdown (verstanden, teilweise, nicht verstanden), automatisch grün, gelb, rot markiert.</p><a class="go" href="https://ludgerusschule-rhede.de/wp-content/uploads/2025/12/Lernfortschrittsraster-Schach-3.xlsx" target="_blank" rel="noopener">Excel herunterladen</a></div></div>
+        </div>
+      </section>
+
+      <section class="block lehrer">
+        <h2><span class="dot"></span>Storytelling im Schachunterricht</h2>
+        <p class="sub">Figuren werden lebendig, das Brett wird zum Königreich. So merken sich Kinder Regeln leichter und entwickeln eigene Lösungen.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/fb32a304-ae23-46ab-b3b8-7ee981686bf3-standard.png" alt="Storytelling" loading="lazy"><div class="body"><h3>Storytelling-Einheit</h3><p>Der Springer als mutiger Krieger, die Dame als starke Anführerin. Kinder werden über Fragen und kleine Geschichten aktiv einbezogen.</p><a class="go" href="https://app.lumi.education/run/2bp65g" target="_blank" rel="noopener">Zur Einheit</a></div></div>
+        </div>
+      </section>
+
+      <section class="block lehrer">
+        <h2><span class="dot"></span>Sprachbasierte Arbeitsblätter</h2>
+        <p class="sub">Textbasierte Lumi-Arbeitsblätter mit Multiple-Choice-, Lücken- und Freitextaufgaben. Begriffe werden sprachlich erfasst, erklärt und reflektiert. Niedrigschwellig und barrierearm.</p>
+        <div class="chipgroup"><h4>Regeln</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/7MwKv1" target="_blank" rel="noopener">Turm</a>
+            <a class="chip" href="https://app.lumi.education/run/06smCh" target="_blank" rel="noopener">Läufer</a>
+            <a class="chip" href="https://app.lumi.education/run/oX9zBa" target="_blank" rel="noopener">Springer</a>
+            <a class="chip" href="https://app.lumi.education/run/Pz8U3T" target="_blank" rel="noopener">Dame</a>
+            <a class="chip" href="https://app.lumi.education/run/9TdK8s" target="_blank" rel="noopener">König</a>
+            <a class="chip" href="https://app.lumi.education/run/6b4TXW" target="_blank" rel="noopener">Bauern</a>
+            <a class="chip" href="https://app.lumi.education/run/CxqW3U" target="_blank" rel="noopener">Schach geben</a>
+            <a class="chip" href="https://app.lumi.education/run/XoLOH5" target="_blank" rel="noopener">Schachmatt</a>
+          </div></div>
+        <div class="chipgroup"><h4>Sonderregeln</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/LZqL4F" target="_blank" rel="noopener">Rochade</a>
+            <a class="chip" href="https://app.lumi.education/run/41b2o7" target="_blank" rel="noopener">En Passant</a>
+            <a class="chip" href="https://app.lumi.education/run/r29oly" target="_blank" rel="noopener">Patt</a>
+            <a class="chip" href="https://app.lumi.education/run/wbGOj_" target="_blank" rel="noopener">Umwandlung</a>
+          </div></div>
+        <div class="chipgroup"><h4>Taktische und weitere Begriffe</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/uxLOEF" target="_blank" rel="noopener">Fesselung</a>
+            <a class="chip" href="https://app.lumi.education/run/KG07FR" target="_blank" rel="noopener">Gabel</a>
+            <a class="chip" href="https://app.lumi.education/run/abAXdY" target="_blank" rel="noopener">Spieß</a>
+            <a class="chip" href="https://app.lumi.education/run/2boEgH" target="_blank" rel="noopener">Abzug</a>
+            <a class="chip" href="https://app.lumi.education/run/acaEh-" target="_blank" rel="noopener">Überlastung</a>
+            <a class="chip" href="https://app.lumi.education/run/8ohIAE" target="_blank" rel="noopener">Tempo</a>
+            <a class="chip" href="https://app.lumi.education/run/kyeO2H" target="_blank" rel="noopener">Freibauer</a>
+            <a class="chip" href="https://app.lumi.education/run/dcjd2C" target="_blank" rel="noopener">Opposition</a>
+          </div></div>
+        <div class="chipgroup"><h4>Beispiel</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/-xQ3Wm" target="_blank" rel="noopener">Beispiel-Arbeitsblatt ansehen</a>
+          </div></div>
+      </section>
+
+      <section class="block lehrer">
+        <h2><span class="dot"></span>Videos und Übungen für den Einsatz</h2>
+        <p class="sub">Fertige Lernvideos mit passenden Übungen.</p>
+        <div class="grid">
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/chatgpt-image-26-dez-2025-09_52_05-standard.jpg" alt="So ziehen die Figuren" loading="lazy"><div class="body"><h3>So ziehen die Figuren</h3><p>Erklärvideo für die Grundschule, Figur für Figur mit Merksätzen.</p><a class="go" href="https://app.lumi.education/run/f_DPeU" target="_blank" rel="noopener">Video</a></div></div>
+          <div class="card"><img src="https://primary.jwwb.nl/public/j/j/j/temp-dcwkybhwyyqzgmzkhhpc/chatgpt-image-2-feb-2026-14_58_07-standard.jpg" alt="Grundregeln als Präsentation" loading="lazy"><div class="body"><h3>Grundregeln als Präsentation</h3><p>Ruhige Course-Presentation für Lernende, die Übersicht und Klarheit brauchen.</p><a class="go" href="https://app.lumi.education/run/W24lfj" target="_blank" rel="noopener">Ansehen</a></div></div>
+          <div class="card"><div class="ph">&#9822;</div><div class="body"><h3>Figuren fangen</h3><p>Video und Übung dazu, wie man gegnerische Figuren fängt (in Arbeit).</p><a class="go" href="https://app.lumi.education/run/4ny7GJ" target="_blank" rel="noopener">Video</a></div></div>
+        </div>
+      </section>
+
+      <section class="block lehrer">
+        <h2><span class="dot"></span>Zur freien Verwendung</h2>
+        <p class="sub">Dasselbe Grundregeln-Material wie im Einsteiger-Bereich, hier in allen Formaten gebündelt zum Weitergeben.</p>
+        <div class="formatbox" style="border-left-color:var(--lehr)">
+          <div class="fbhead"><h3>Schach-Grundregeln</h3><span class="pill" style="color:var(--lehr);background:#efe9fb;border-color:#e0d6f7">4 Formate</span></div>
+          <p>Frei nutzbar. Wähle das Format, das für deine Lerngruppe passt.</p>
+          <div class="fmts">
+            <div class="fmt"><span class="type" style="color:var(--lehr)">Online &middot; interaktiv</span><span class="name">Online-Version</span><span class="desc">Im Browser, für Tablet und Whiteboard.</span><a href="https://edmundbruns.github.io/Schach-grundregeln/" target="_blank" rel="noopener" style="color:var(--lehr)">Öffnen &rarr;</a></div>
+            <div class="fmt"><span class="type" style="color:var(--lehr)">PDF &middot; zum Drucken</span><span class="name">Arbeitsheft (PDF)</span><span class="desc">Arbeitsblätter zum Ausdrucken.</span><a href="https://ludgerusschule-rhede.de/wp-content/uploads/2025/01/Schach-lernen-Grundregeln-1-ausgabe.pdf" target="_blank" rel="noopener" style="color:var(--lehr)">Öffnen &rarr;</a></div>
+            <div class="fmt"><span class="type" style="color:var(--lehr)">PDF &middot; bearbeitbar</span><span class="name">Bearbeitbares PDF</span><span class="desc">Am Gerät ausfüllen.</span><a href="https://drive.google.com/file/d/1FCcHicOwxeUqhy1_QjLcGt8IyNq7E2ls/view?usp=sharing" target="_blank" rel="noopener" style="color:var(--lehr)">Herunterladen &rarr;</a></div>
+            <div class="fmt"><span class="type" style="color:var(--lehr)">Online &middot; Lösungen</span><span class="name">Lösungen</span><span class="desc">Für Selbstkontrolle und Besprechung.</span><a href="https://edmundbruns.github.io/Schach-grundregeln/loesungen.html" target="_blank" rel="noopener" style="color:var(--lehr)">Öffnen &rarr;</a></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ SCHACHWELTMEISTER ============ -->
+    <div class="panel weltmeister" id="weltmeister">
+      <p class="panel-intro">Eine Zeitreise durch die Geschichte der Schachweltmeister, von den Anfängen bis zur Gegenwart.</p>
+
+      <section class="block weltmeister">
+        <h2><span class="dot"></span>Einführung: Die Schachtradition und ihre Größen</h2>
+        <div class="prose">
+          <p><b>Die Anfänge.</b> Die Schachtradition reicht über 1.500 Jahre zurück, mit Wurzeln in Indien und Persien. Das Spiel hat sich über die Jahrhunderte entwickelt und erlangte im Mittelalter in Europa große Popularität.</p>
+          <p><b>Die Großen.</b> Im 19. Jahrhundert entstand die Idee eines offiziellen Weltmeisters. Legendäre Spieler wie Paul Morphy und Adolf Anderssen prägten die frühen Jahre des modernen Schachs.</p>
+        </div>
+      </section>
+
+      <section class="block weltmeister">
+        <h2><span class="dot"></span>Die Weltmeister im Überblick</h2>
+        <div class="wmlist">
+          <div class="wm"><span class="yr">1886&ndash;1894</span><h3>Wilhelm Steinitz</h3><span class="role">Der erste offizielle Weltmeister</span><p>Steinitz galt als Kämpfernatur und scheute keine Auseinandersetzung. Er entwickelte eine tiefe theoretische Grundlage, bekannt als „Steinitz-Schule", und legte Wert auf Positionsvorteil und Langzeitplanung. <b>1886</b> besiegte er Johannes Zukertort im Match und wurde zum ersten offiziellen Schachweltmeister.</p></div>
+          <div class="wm"><span class="yr">1894&ndash;1921</span><h3>Emanuel Lasker</h3><span class="role">Lange Herrschaft und brillante Spielzüge</span><p>Lasker verteidigte seinen Titel <b>27 Jahre</b> lang und war der am längsten amtierende Weltmeister. Bekannt für tiefe strategische Ideen, kombinatorische Finesse und psychologische Stärke. Er revolutionierte das Spiel mit aggressiver, unorthodoxer Spielweise.</p></div>
+          <div class="wm"><span class="yr">1921&ndash;1927</span><h3>José Raúl Capablanca</h3><span class="role">Perfektionist am Schachbrett</span><p>Ein „Wunderkind", das mit vier Jahren spielen lernte. Sein Spiel war bekannt für Einfachheit, Präzision und Klarheit, mit präziser Positionierung und effizienten Manövern. <b>1921</b> besiegte er Lasker und verteidigte den Titel bis 1927.</p></div>
+          <div class="wm"><span class="yr">1927&ndash;1935 &middot; 1937&ndash;1946</span><h3>Alexander Aljechin</h3><span class="role">Meister der Eröffnungen</span><p>Bekannt für aggressiven Angriffsstil und dramatische Partien. Er trug maßgeblich zur Eröffnungsforschung bei. <b>1927</b> besiegte er Capablanca, verlor 1935 gegen Max Euwe und gewann den Titel im Revanchekampf zurück.</p></div>
+          <div class="wm"><span class="yr">1935&ndash;1937</span><h3>Max Euwe</h3><span class="role">Der einzige niederländische Weltmeister</span><p>Der einzige Niederländer, der den Titel gewann. Bekannt für tiefe strategische Intuition und die Fähigkeit, komplexe Positionen zu analysieren. <b>1935</b> besiegte er Aljechin, verlor den Titel aber wieder an ihn.</p></div>
+          <div class="wm"><span class="yr">1948&ndash;1963</span><h3>Michail Botwinnik</h3><span class="role">Sowjetische Dominanz im Schach</span><p>Der erste sowjetische Weltmeister, Beginn einer neuen Ära. Tiefgründiger, positionsorientierter Stil. Er gewann den Titel fünfmal und verteidigte ihn gegen Herausforderer wie Smyslow und Tal (1948&ndash;1957, 1958&ndash;1960, 1961&ndash;1963).</p></div>
+          <div class="wm"><span class="yr">1957&ndash;1958</span><h3>Wassili Smyslow</h3><span class="role">Eleganter Stratege und Positionsspieler</span><p>Bekannt für harmonisches, solides Positionsspiel und eine feine Balance zwischen Angriff und Verteidigung. Ein virtuoser Endspielspieler, besonders in Turm- und Bauernendspielen. <b>1957</b> besiegte er Botwinnik, verlor den Titel 1958 wieder an ihn.</p></div>
+          <div class="wm"><span class="yr">1960&ndash;1961</span><h3>Michail Tal</h3><span class="role">Poetischer Angriffskünstler</span><p>Der „Magier von Riga", bekannt für brillanten, kompromisslosen Angriffsstil und fast beängstigende Unberechenbarkeit. Er setzte Gegner unter konstanten taktischen Druck. <b>1960</b> gewann er gegen Botwinnik, verlor 1961 den Titel wieder an ihn.</p></div>
+          <div class="wm"><span class="yr">1963&ndash;1969</span><h3>Tigran Petrosjan</h3><span class="role">Meister der Prophylaxe</span><p>Ein unerschütterlicher Verteidigungsspezialist mit nahezu undurchdringlichem Spiel und herausragender Endspieltechnik. <b>1963</b> gewann er gegen Botwinnik und verteidigte den Titel bis 1969, als er gegen Boris Spasski verlor.</p></div>
+          <div class="wm"><span class="yr">1969&ndash;1972</span><h3>Boris Spasski</h3><span class="role">Der Universalspieler</span><p>Bekannt für seine Vielseitigkeit: aggressive Angriffe ebenso wie strategische Endspiele, angepasst an den Gegner. <b>1969</b> wurde er gegen Petrosjan Weltmeister. Sein WM-Kampf 1972 gegen Bobby Fischer war eines der dramatischsten Ereignisse der Schachgeschichte.</p></div>
+          <div class="wm"><span class="yr">1972&ndash;1975</span><h3>Robert James „Bobby" Fischer</h3><span class="role">Geniales, aber exzentrisches Genie</span><p>Fischer revolutionierte das Spiel durch exakte Vorbereitung, präzise Taktik und grandiose Endspieltechnik, besonders mit der Sizilianischen Verteidigung. Schon als 13-Jähriger wurde er durch die „Partie des Jahrhunderts" (1956 gegen Donald Byrne) bekannt. <b>1972</b> gewann er gegen Spasski im Kalten Krieg, nach 20 Siegen in Folge, und zog sich danach zurück.</p></div>
+          <div class="wm"><span class="yr">1975&ndash;1985</span><h3>Anatoli Karpow</h3><span class="role">Der Stratege</span><p>Ruhig, geduldig und präzise: Er erlangte kleine strategische Vorteile und konservierte sie bis ins Endspiel. <b>1975</b> wurde er Weltmeister, nachdem Fischer den Titel nicht verteidigte, und hielt ihn bis 1985 (Niederlage gegen Kasparow). Über 160 Turniersiege.</p></div>
+          <div class="wm"><span class="yr">1985&ndash;1993 / 2000</span><h3>Garri Kasparow</h3><span class="role">Der Dominator des Schachs</span><p>Dynamischer, aggressiver Stil mit tiefer Planung und früher Nutzung von Computeranalysen. <b>1985</b> wurde er mit 22 Jahren jüngster Weltmeister und dominierte 15 Jahre. Für viele neben Fischer und Carlsen der beste Spieler aller Zeiten. Seine Niederlage 2000 gegen Kramnik galt als Sensation.</p></div>
+          <div class="wm"><span class="yr">2000 / 2006&ndash;2007</span><h3>Wladimir Kramnik</h3><span class="role">Tiefgründiger Stratege</span><p>Solide und pragmatisch, mit herausragender Endspieltechnik. <b>2000</b> besiegte er Kasparow, vor allem mit der Berliner Verteidigung, die danach zur Standardverteidigung der Weltelite wurde. 2006 beendete er die Spaltung der WM im Kampf gegen Topalow und hielt den Titel bis 2007.</p></div>
+          <div class="wm"><span class="yr">2007&ndash;2013</span><h3>Viswanathan Anand</h3><span class="role">Der diplomatische Taktiker</span><p>Bekannt für Geschwindigkeit und Präzision, stark im Schnell- und Blitzschach. FIDE-Weltmeister 2000&ndash;2002 und ab 2007 der 15. Weltmeister, bis zur Niederlage 2013 gegen Carlsen. Er löste den Schachboom in Indien aus.</p></div>
+          <div class="wm"><span class="yr">2013&ndash;2023</span><h3>Magnus Carlsen</h3><span class="role">Der König des modernen Schachs</span><p>Der „Magier" des Endspiels, der aus kleinsten Vorteilen Siege zieht. Er dominierte klassisches Schach, Schnell- und Blitzschach und führte die Weltrangliste über ein Jahrzehnt an. 2023 verzichtete er freiwillig auf die Titelverteidigung. Schnellschach-WM 2014, 2015, 2019, 2022, 2023; Blitz-WM 2009, 2014, 2017&ndash;2019, 2022&ndash;2024.</p></div>
+          <div class="wm"><span class="yr">2023&ndash;2024</span><h3>Ding Liren</h3><span class="role">Der Aufstieg des chinesischen Schachphänomens</span><p>Bekannt für präzise Berechnung und tiefe Eröffnungsanalyse, mit solidem und kreativem Stil. <b>2023</b> gewann er den Titel im packenden Wettkampf gegen Ian Nepomniachtchi. Nach großem Druck konnte er nicht an alte Stärke anknüpfen und verlor den Titel 2024 an Gukesh.</p></div>
+          <div class="wm"><span class="yr">seit 2024</span><h3>Dommaraju Gukesh</h3><span class="role">Der jüngste Weltmeister und Star Indiens</span><p>Ein junges Talent aus Indien, mit 18 Jahren bereits in den Top 10, aggressiver und dynamischer Stil. Als Zweiter des FIDE Circuit 2023 qualifizierte er sich fürs Kandidatenturnier, das er gewann. <b>2024</b> errang er den Titel gegen Ding Liren und wurde mit 18 Jahren der jüngste Weltmeister aller Zeiten.</p></div>
+        </div>
+      </section>
+
+      <section class="block weltmeister">
+        <h2><span class="dot"></span>Interessantes über Schachweltmeister</h2>
+        <div class="facts">
+          <div class="fcard"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Hoogovenschaaktoernooi,_Smyslov_(USSR),_kop,_Bestanddeelnr_925-3008.jpg" alt="Wassili Smyslow" loading="lazy"><div class="fb"><h3>Wassili Smyslow</h3><p>Ab 1957 Schiedsrichter für Schachkomposition. In seinen letzten zehn Lebensjahren veröffentlichte er Endspielstudien, obwohl er fast blind war. Smyslow war ausgebildeter Opernsänger. 1983 gewann er seinen Viertelfinalkampf gegen Robert Hübner nach durchweg unentschiedenem Verlauf durch den Wurf einer Roulettekugel.</p><p class="att">Bert Verhoeff / Anefo, <a href="https://commons.wikimedia.org/wiki/File:Hoogovenschaaktoernooi,_Smyslov_(USSR),_kop,_Bestanddeelnr_925-3008.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode" target="_blank" rel="noopener">CC0 1.0</a></p></div></div>
+          <div class="fcard"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Tigran_Petrosian_1962.jpg" alt="Tigran Petrosjan" loading="lazy"><div class="fb"><h3>Tigran Petrosjan</h3><p>Wegen seines defensivbetonten Spiels und seiner wenigen Niederlagen wurde er der „eiserne Tigran" oder auch „bester Torwart Armeniens" genannt. Sein Porträt ist auf der armenischen 2000-Dram-Banknote abgebildet.</p><p class="att">Harry Pot / Anefo, <a href="https://commons.wikimedia.org/wiki/File:Tigran_Petrosian_1962.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode" target="_blank" rel="noopener">CC0 1.0</a></p></div></div>
+          <div class="fcard"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Wilhelm_Steinitz2.jpg" alt="Wilhelm Steinitz" loading="lazy"><div class="fb"><h3>Wilhelm Steinitz</h3><p>Steinitz war das neunte von 13 Kindern. Er gilt nicht nur als erster Schachweltmeister, sondern war mit 49 Jahren auch der älteste Spieler beim Erringen des Titels.</p><p class="att">Unknown author, <a href="https://commons.wikimedia.org/wiki/File:Wilhelm_Steinitz2.jpg" target="_blank" rel="noopener">Wikimedia Commons</a>, gemeinfrei (PD-old)</p></div></div>
+        </div>
+      </section>
+
+      <section class="block weltmeister">
+        <h2><span class="dot"></span>Zum Weiterschauen</h2>
+        <div class="grid">
+          <div class="card"><div class="ph">&#9822;</div><div class="body"><h3>Michail Tal &ndash; Der Magier von Riga</h3><p>Ein eigenes Porträt des achten Weltmeisters und seines brillanten Angriffsstils.</p><a class="go" href="https://app.lumi.education/run/bNjz6u" target="_blank" rel="noopener">Ansehen</a></div></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ VERSCHIEDENES ============ -->
+    <div class="panel verschiedenes" id="verschiedenes">
+      <p class="panel-intro">Alles, was sonst nicht in eine Schublade passt: ein Escape Game, Rätsel und Krimis, ein Mathe-Ausflug und KI-generierte Schachlieder.</p>
+
+      <section class="block verschiedenes">
+        <h2><span class="dot"></span>Schachmatt in Moskau &ndash; das Escape Game</h2>
+        <p class="sub">Rettet Victor Königstein! Ein interaktives EduBreakout rund um Mattbilder. Perfekt für Klasse 5 bis 10. Online spielbar oder analog mit Arbeitsblättern. Teamarbeit, Spannung, Aha-Momente.</p>
+        <div class="prose">
+          <p>Der fiktive Schachweltmeister Victor Königstein ist verschwunden. Die Entführer hinterlassen Schachrätsel. Jedes gelöste Rätsel liefert ein Code-Element. Am Ende führen alle Codes auf einer Landkarte zum gesuchten Aufenthaltsort in Moskau.</p>
+        </div>
+        <div class="chipgroup"><h4>Online-Variante</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/SwNnNc" target="_blank" rel="noopener">1. Figuren im Nebel</a>
+            <a class="chip" href="https://app.lumi.education/run/zuKOj9" target="_blank" rel="noopener">2. Der zweite Code</a>
+            <a class="chip" href="https://app.lumi.education/run/_Btjp4" target="_blank" rel="noopener">3. Schatten über den Gassen</a>
+            <a class="chip" href="https://app.lumi.education/run/oXwl14" target="_blank" rel="noopener">4. Der Pavillon der letzten Züge</a>
+          </div></div>
+        <div class="chipgroup"><h4>Material und Extras</h4>
+          <div class="chips">
+            <a class="chip" href="https://gratis-4589610.webadorsite.com/schachmatt-in-moskau" target="_blank" rel="noopener">Lehrerinformationen</a>
+            <a class="chip" href="https://gratis-4589610.webadorsite.com/arbeitsblaetter-schachmatt-in-moskau" target="_blank" rel="noopener">Analoge PDF-Version</a>
+            <a class="chip" href="https://app.lumi.education/run/-0ioD2" target="_blank" rel="noopener">Soundtrack: König im Schatten</a>
+          </div></div>
+      </section>
+
+      <section class="block verschiedenes">
+        <h2><span class="dot"></span>Rätsel, Krimis und Spiele</h2>
+        <p class="sub">Zum Knobeln, für Vertretung, AG oder zwischendurch.</p>
+        <div class="grid">
+          <div class="card"><div class="ph">&#9821;</div><div class="body"><h3>Emmas Schachkrimi</h3><p>Emma muss einen Diebstahl aufklären. Wer helfen will, sollte die Schachregeln beherrschen. Online oder als ausfüllbares PDF.</p><a class="go" href="https://app.lumi.education/run/7RWHS_" target="_blank" rel="noopener">Online spielen</a><span class="more"><a href="https://gratis-4589610.webadorsite.com/_downloads/0e85a8f7895bf02d1d4bbad16f8f8da7" target="_blank" rel="noopener">PDF-Version &rarr;</a></span></div></div>
+          <div class="card"><div class="ph">&#9822;</div><div class="body"><h3>Schiffe versenken</h3><p>Mit „Schiffe versenken" die Koordinaten des Schachbretts lernen. Arbeitsblatt plus Variante „Königliche Rettung" als PDF. Nach einer Idee von Walter Rädler.</p><a class="go" href="https://schachkicker.de/wp-content/uploads/2025/10/Schiffe-versenken-mit-Schachfiguren.pdf" target="_blank" rel="noopener">PDF öffnen</a></div></div>
+          <div class="card"><div class="ph">&#9818;</div><div class="body"><h3>Retroschach</h3><p>Eine Reise zurück in der Schachpartie: Welcher Zug wurde gerade gespielt?</p><a class="go" href="https://app.lumi.education/run/H0XaQp" target="_blank" rel="noopener">Rätseln</a><span class="more"><a href="https://app.lumi.education/run/Z8e8jG" target="_blank" rel="noopener">Retroschach II &rarr;</a></span></div></div>
+          <div class="card"><div class="ph">&#9820;</div><div class="body"><h3>Schach-Sudoku</h3><p>Sudoku mit Schachfiguren statt Zahlen.</p><a class="go" href="https://app.lumi.education/run/dZh83H" target="_blank" rel="noopener">Rätseln</a></div></div>
+          <div class="card"><div class="ph">&#9819;</div><div class="body"><h3>Rätsel über die Schachepochen</h3><p>Ein kleines Rätsel rund um die Epochen der Schachgeschichte.</p><a class="go" href="https://app.lumi.education/run/p8evBe" target="_blank" rel="noopener">Rätseln</a></div></div>
+          <div class="card"><div class="ph">&#9817;</div><div class="body"><h3>Reime im Schachunterricht</h3><p>Rhythmus und Wiederholung helfen beim Merken. Abstrakte Begriffe bleiben so besser im Gedächtnis.</p><a class="go" href="https://app.lumi.education/run/1zc9CD" target="_blank" rel="noopener">Teil 1</a><span class="more"><a href="https://app.lumi.education/run/XMGqpb" target="_blank" rel="noopener">Teil 2 &rarr;</a></span></div></div>
+          <div class="card"><div class="ph">&#9820;</div><div class="body"><h3>Emma möchte zu ihrem Großvater</h3><p>Überquere das Schachbrett, weiche den Falltüren aus und erreiche Großvater Hans.</p><a class="go" href="https://ludgerusschule-rhede.de/wp-admin/admin-ajax.php?action=h5p_embed&id=5" target="_blank" rel="noopener">Spielen</a></div></div>
+        </div>
+      </section>
+
+      <section class="block verschiedenes">
+        <h2><span class="dot"></span>Mathe trifft Schach</h2>
+        <div class="grid">
+          <div class="card"><div class="ph">&#9819;</div><div class="body"><h3>Der Satz des Pythagoras auf dem Schachbrett</h3><p>Auf dem Schachbrett gilt der Satz des Pythagoras nicht wie gewohnt. Für den König zählt die diagonale Strecke genauso wie die gerade. Ein schöner Anlass, Mathematik und Schach zu verbinden.</p><a class="go" href="https://www.youtube.com/watch?v=GRaJ9-FsBlE" target="_blank" rel="noopener">YouTube-Video</a></div></div>
+        </div>
+      </section>
+
+      <section class="block verschiedenes">
+        <h2><span class="dot"></span>Schachlieder (KI-generiert)</h2>
+        <p class="sub">Alle Lieder sind KI-generiert (Quelle: suno.ai).</p>
+        <div class="chipgroup"><h4>Themen und Spieler</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/uEz7fL" target="_blank" rel="noopener">AlphaZero &middot; Game of the Mind (Pop)</a>
+            <a class="chip" href="https://app.lumi.education/run/-QOfyH" target="_blank" rel="noopener">R. J. Fischer &middot; Master of the Board (Gospel)</a>
+            <a class="chip" href="https://app.lumi.education/run/o3BoRb" target="_blank" rel="noopener">Schachcafé &middot; Mind Games (Jazz 1950)</a>
+            <a class="chip" href="https://app.lumi.education/run/TrkTKj" target="_blank" rel="noopener">Schachschüler &middot; The Ballet of Chess (Klassik)</a>
+            <a class="chip" href="https://app.lumi.education/run/oQqAhx" target="_blank" rel="noopener">Der „Schachtürke"</a>
+          </div></div>
+        <div class="chipgroup"><h4>Eröffnungen</h4>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/sd7qcz" target="_blank" rel="noopener">Königsindisch</a>
+            <a class="chip" href="https://app.lumi.education/run/uIjfZI" target="_blank" rel="noopener">Italienische Partie</a>
+          </div></div>
+        <div class="chipgroup"><h4>Der Weg nach Osnabrück 2024</h4>
+          <p class="sub" style="margin:0 0 9px">Die Schulschachmannschaft der Ludgerusschule zu den Deutschen Haupt- und Realschulmeisterschaften, in drei Genres.</p>
+          <div class="chips">
+            <a class="chip" href="https://app.lumi.education/run/fLJeQC" target="_blank" rel="noopener">Züge nach Osnabrück I (Smooth Trap)</a>
+            <a class="chip" href="https://app.lumi.education/run/-cXqtQ" target="_blank" rel="noopener">Züge nach Osnabrück II (Grunge)</a>
+            <a class="chip" href="https://app.lumi.education/run/W1XPCn" target="_blank" rel="noopener">Züge nach Osnabrück III (Delta Blues)</a>
+          </div></div>
+      </section>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Kostenlose Schachmaterialien. &nbsp;&middot;&nbsp;
+    <a href="https://gratis-4589610.webadorsite.com/kontakt">Kontakt</a> &nbsp;&middot;&nbsp;
+    <a href="https://gratis-4589610.webadorsite.com/">Startseite</a>
+  </div>
+</footer>
+
+<script>
+  const btns = document.querySelectorAll('.tabbtn');
+  const panels = document.querySelectorAll('.panel');
+  btns.forEach(b=>b.addEventListener('click',()=>{
+    const t=b.dataset.tab;
+    btns.forEach(x=>x.classList.toggle('active',x===b));
+    panels.forEach(p=>p.classList.toggle('active',p.id===t));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+</script>
+</body>
+</html>
